@@ -1,0 +1,42 @@
+{
+  "name": "devlab-pension-prototype",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "prisma generate && prisma db push && next build",
+    "postinstall": "prisma generate",
+    "vercel-build": "prisma generate && prisma db push && next build",
+    "start": "next start",
+    "lint": "eslint"
+  },
+  "prisma": {
+    "seed": "tsx prisma/seed.ts"
+  },
+  "dependencies": {
+    "@ai-sdk/google": "^2.0.44",
+    "@ai-sdk/rsc": "^1.0.107",
+    "@simplewebauthn/browser": "^13.2.2",
+    "@simplewebauthn/server": "^13.2.2",
+    "ai": "^5.0.106",
+    "axios": "^1.13.2",
+    "lucide-react": "^0.555.0",
+    "next": "16.0.6",
+    "react": "19.2.0",
+    "react-dom": "19.2.0",
+    "zod": "^4.1.13"
+  },
+  "devDependencies": {
+    "@prisma/client": "^6.19.0",
+    "@tailwindcss/postcss": "^4",
+    "@types/node": "^20",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "eslint": "^9",
+    "eslint-config-next": "16.0.6",
+    "prisma": "^6.19.0",
+    "tailwindcss": "^4",
+    "tsx": "^4.21.0",
+    "typescript": "^5"
+  }
+}
