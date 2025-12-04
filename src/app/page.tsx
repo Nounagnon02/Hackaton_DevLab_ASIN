@@ -30,7 +30,7 @@ const FAQComponent = () => {
 
   const faqItems = [
     {
-      question: "Comment créer mon compte ?",
+      question: "Comment utiliser ?",
       answer:
         "C'est très simple ! Cliquez sur 'Commencer', renseignez vos informations personnelles (nom, prénom, numéro de sécurité sociale) et suivez les étapes de vérification d'identité. L'inscription prend moins de 5 minutes.",
     },
@@ -278,7 +278,7 @@ export default function Home() {
       {/* Why Choose Us Section */}
       <section
         id="Avantage"
-        className="pt-20 pb-6 lg:pt-28 lg:pb-8 bg-gradient-to-b from-gray-50 to-white w-full"
+        className="pt-20 pb-6 lg:pt-28 lg:pb-8 bg-linear-to-b from-gray-50 to-white w-full"
       >
         <div className="container mx-auto px-4">
           <div className="text-center mb-16">
