@@ -6,7 +6,7 @@ let isRunning = false;
 let queue = [];
 let activeRequests = 0;
 let config = {
-    apiUrl: 'http://localhost:3001/transfers',
+    apiUrl: '/api/proxy/transfer',
     workers: 20,
     delay: 10,
     restartInterval: 200,

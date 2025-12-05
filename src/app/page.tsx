@@ -129,7 +129,7 @@ const Header = () => {
               <Wallet className="w-6 h-6 text-white" />
             </div>
             <div>
-              <span className="font-bold text-xl text-gray-900 tracking-tight block leading-tight">Pension<span className="text-emerald-600">Retrait</span></span>
+              <span className="font-bold text-xl text-gray-900 tracking-tight block leading-tight">Gbè<span className="text-emerald-600">Dagbé</span></span>
               <span className="text-[10px] text-gray-400 uppercase tracking-widest font-medium">République du Bénin</span>
             </div>
           </Link>
@@ -144,7 +144,6 @@ const Header = () => {
           </nav>
 
           <div className="hidden lg:flex items-center gap-4">
-            <Link href="/admin/login" className="text-gray-600 hover:text-emerald-600 font-medium text-sm transition-colors">Administration</Link>
             <Link href="/pensioner" className="bg-gradient-to-r from-emerald-600 to-teal-600 text-white px-6 py-3 rounded-full font-semibold text-sm hover:shadow-lg hover:shadow-emerald-200 transition-all hover:-translate-y-0.5 flex items-center gap-2">
               <User size={18} />
               Mon Espace
@@ -492,7 +491,7 @@ export default function Home() {
                 <div className="w-12 h-12 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-2xl flex items-center justify-center">
                   <Wallet className="w-6 h-6 text-white" />
                 </div>
-                <span className="text-xl font-bold">PensionRetrait</span>
+                <span className="text-xl font-bold">GbèDagbé</span>
               </div>
               <p className="text-gray-400 leading-relaxed">La plateforme de référence pour la gestion des pensions de retraite au Bénin.</p>
               <div className="flex gap-3">
@@ -526,14 +525,14 @@ export default function Home() {
               <h3 className="font-bold text-lg mb-6">Contact</h3>
               <ul className="space-y-4 text-gray-400">
                 <li className="flex items-center gap-3"><Phone size={18} className="text-emerald-500" /><span>0 800 123 456</span></li>
-                <li className="flex items-center gap-3"><Mail size={18} className="text-emerald-500" /><span>contact@pensionretrait.bj</span></li>
+                <li className="flex items-center gap-3"><Mail size={18} className="text-emerald-500" /><span>contact@gbedagbe.bj</span></li>
                 <li className="flex items-start gap-3"><MapPin size={18} className="text-emerald-500 mt-1" /><span>Cotonou, Bénin</span></li>
               </ul>
             </div>
           </div>
 
           <div className="border-t border-gray-800 pt-8 flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-gray-500">
-            <p>© 2025 PensionRetrait. Tous droits réservés.</p>
+            <p>© 2025 GbèDagbé. Tous droits réservés.</p>
             <p>Développé pour le <span className="text-emerald-500 font-semibold">Hackathon DevLab 2025</span></p>
           </div>
         </div>

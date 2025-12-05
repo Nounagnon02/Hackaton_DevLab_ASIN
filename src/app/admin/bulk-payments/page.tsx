@@ -29,7 +29,7 @@ interface SavedSession {
 }
 
 // --- IndexedDB Helper ---
-const DB_NAME = 'PaymentNexusDB';
+const DB_NAME = 'GbèDagbéDB';
 const STORE_NAME = 'sessions';
 const DB_VERSION = 1;
 
@@ -109,7 +109,7 @@ export default function BulkPaymentsPage() {
     const scrollContainerRef = useRef<HTMLDivElement>(null);
 
     const [config, setConfig] = useState({
-        apiUrl: 'http://localhost:3001/transfers',
+        apiUrl: '/api/proxy/transfer',
         workers: 20,
         delay: 10,
         restartInterval: 200,
@@ -203,7 +203,7 @@ export default function BulkPaymentsPage() {
                 setIsRunning(false);
                 if (timerRef.current) clearInterval(timerRef.current);
             } else if (type === 'RESTART_NEEDED') {
-                fetch('http://localhost:3001/restart-all', { method: 'POST' }).catch(() => { });
+                fetch('http://localhost:4001/restart-all', { method: 'POST' }).catch(() => { });
             }
         };
         return () => workerRef.current?.terminate();
@@ -568,19 +568,19 @@ export default function BulkPaymentsPage() {
     const speed = processed > 0 && startTimeRef.current ? (processed / ((Date.now() - startTimeRef.current) / 1000)).toFixed(1) : '0';
 
     return (
-        <div className="min-h-screen bg-[#050505] text-gray-300 font-sans selection:bg-cyan-500/30 overflow-hidden flex flex-col">
+        <div className="h-screen bg-[#050505] text-gray-300 font-sans selection:bg-cyan-500/30 flex flex-col">
             {/* Background Grid Effect */}
             <div className="fixed inset-0 bg-[linear-gradient(to_right,#80808008_1px,transparent_1px),linear-gradient(to_bottom,#80808008_1px,transparent_1px)] bg-[size:24px_24px] pointer-events-none"></div>
 
             {/* Header */}
-            <header className="relative z-10 border-b border-white/5 bg-[#0a0a0a]/80 backdrop-blur-md">
+            <header className="relative z-10 border-b border-white/5 bg-[#0a0a0a]/80 backdrop-blur-md flex-shrink-0">
                 <div className="px-6 py-4 flex items-center justify-between">
                     <div className="flex items-center gap-4">
                         <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-cyan-500/20 to-blue-600/20 border border-cyan-500/30 flex items-center justify-center shadow-[0_0_15px_rgba(6,182,212,0.15)]">
                             <Zap className="w-5 h-5 text-cyan-400" />
                         </div>
                         <div>
-                            <h1 className="font-bold text-lg text-white tracking-tight">PAYMENT<span className="text-cyan-400">NEXUS</span></h1>
+                            <h1 className="font-bold text-lg text-white tracking-tight">GBÈ<span className="text-cyan-400">DAGBÉ</span></h1>
                             <div className="flex items-center gap-2 text-[10px] uppercase tracking-widest text-gray-500 font-medium">
                                 <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
                                 System Online
@@ -621,9 +621,9 @@ export default function BulkPaymentsPage() {
             </header>
 
             {/* Main Content */}
-            <main className="flex-1 overflow-hidden flex relative z-10">
+            <main className="flex-1 flex relative z-10 min-h-0">
                 {/* Left Panel: Controls & Config */}
-                <div className="w-80 border-r border-white/5 bg-[#0a0a0a]/50 backdrop-blur-sm flex flex-col">
+                <div className="w-80 border-r border-white/5 bg-[#0a0a0a]/50 backdrop-blur-sm flex flex-col flex-shrink-0">
                     <div className="p-6 space-y-6 overflow-y-auto custom-scrollbar">
                         {/* File Upload */}
                         <div className="space-y-3">
@@ -731,9 +731,9 @@ export default function BulkPaymentsPage() {
                 </div>
 
                 {/* Right Panel: Logs & Visualization */}
-                <div className="flex-1 flex flex-col bg-[#050505] relative">
+                <div className="flex-1 flex flex-col bg-[#050505] relative min-w-0">
                     {/* Tabs */}
-                    <div className="flex items-center border-b border-white/5 bg-[#0a0a0a]/50">
+                    <div className="flex items-center border-b border-white/5 bg-[#0a0a0a]/50 flex-shrink-0">
                         {(['all', 'success', 'errors'] as const).map((tab) => (
                             <button
                                 key={tab}

@@ -27,7 +27,7 @@ async function submitAdminMessage(content: string): Promise<{ id: number; displa
 
     const result = await streamUI({
         model: google(process.env.OPENAI_MODEL_NAME || 'gemini-1.5-flash'),
-        system: `Tu es PayBot, un assistant IA spécialisé dans les paiements de masse de pensions via Mojaloop.
+        system: `Tu es GbèDagbéBOT, un assistant IA spécialisé dans les paiements de masse de pensions via Mojaloop.
 
 Tu aides les administrateurs à :
 - Charger et analyser des fichiers CSV de paiements

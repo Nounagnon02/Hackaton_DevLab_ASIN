@@ -151,7 +151,7 @@ export function AdminChatPopup() {
                                 <Zap className="w-5 h-5 text-cyan-400" />
                             </div>
                             <div>
-                                <h3 className="font-bold text-white tracking-tight">PAY<span className="text-cyan-400">BOT</span></h3>
+                                <h3 className="font-bold text-white tracking-tight">GBÈDAGBÉ<span className="text-cyan-400">BOT</span></h3>
                                 <div className="flex items-center gap-2 text-[10px] uppercase tracking-widest text-gray-500 font-medium">
                                     <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
                                     Online

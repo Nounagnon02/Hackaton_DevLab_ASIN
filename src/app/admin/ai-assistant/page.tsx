@@ -72,7 +72,7 @@ export default function AdminAIAssistantPage() {
                                 <Bot className="w-5 h-5 text-white" />
                             </div>
                             <div>
-                                <h1 className="text-xl font-bold text-gray-900">PayBot Assistant</h1>
+                                <h1 className="text-xl font-bold text-gray-900">GbèDagbéBOT Assistant</h1>
                                 <p className="text-xs text-gray-500">Votre copilote pour les paiements de masse</p>
                             </div>
                         </div>
@@ -98,7 +98,7 @@ export default function AdminAIAssistantPage() {
                                 <div>
                                     <h2 className="text-2xl font-bold text-gray-900 mb-2">Bonjour! 👋</h2>
                                     <p className="text-gray-600 max-w-md mb-6">
-                                        Je suis PayBot, votre assistant IA pour les paiements de masse.
+                                        Je suis GbèDagbéBOT, votre assistant IA pour les paiements de masse.
                                         Je peux vous aider à analyser vos fichiers CSV et détecter les erreurs.
                                     </p>
                                 </div>
@@ -139,7 +139,7 @@ export default function AdminAIAssistantPage() {
                                             <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '150ms' }}></div>
                                             <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '300ms' }}></div>
                                         </div>
-                                        <span className="text-sm text-gray-500">PayBot réfléchit...</span>
+                                        <span className="text-sm text-gray-500">GbèDagbéBOT réfléchit...</span>
                                     </div>
                                 </div>
                             </div>
@@ -175,7 +175,7 @@ export default function AdminAIAssistantPage() {
                             </button>
                         </form>
                         <p className="text-xs text-gray-400 mt-2 text-center">
-                            PayBot peut faire des erreurs. Vérifiez toujours les informations importantes.
+                            GbèDagbéBOT peut faire des erreurs. Vérifiez toujours les informations importantes.
                         </p>
                     </div>
                 </div>
