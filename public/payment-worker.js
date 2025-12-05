@@ -104,10 +104,10 @@ async function processItem(row) {
     try {
         processedCount++;
 
-        // Check for restart need
-        if (processedCount > 0 && processedCount % config.restartInterval === 0) {
-            self.postMessage({ type: 'RESTART_NEEDED' });
-        }
+        // DÉSACTIVÉ: Le redémarrage automatique causait des cascades d'erreurs
+        // if (processedCount > 0 && processedCount % config.restartInterval === 0) {
+        //     self.postMessage({ type: 'RESTART_NEEDED' });
+        // }
 
         const res = await fetch(config.apiUrl, {
             method: 'POST',

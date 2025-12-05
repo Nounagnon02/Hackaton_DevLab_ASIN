@@ -28,6 +28,7 @@ export function AdminChatPopup() {
     const { submitAdminMessage } = useActions<typeof AI>();
     const [isLoading, setIsLoading] = useState(false);
     const [analysisMessages, setAnalysisMessages] = useState<AnalysisMessage[]>([]);
+    const [lastUpdate, setLastUpdate] = useState<number | null>(null);
 
     // Persist chat open state
     useEffect(() => {
@@ -37,40 +38,51 @@ export function AdminChatPopup() {
         }
     }, []);
 
-    // Listen for payment analysis updates
+    // Listen for payment analysis updates (Event + Polling)
     useEffect(() => {
-        const handleAnalysisUpdate = () => {
-            console.log('📨 Received paymentAnalysisUpdate event');
+        const checkAnalysis = () => {
             const analysisData = sessionStorage.getItem('paymentAnalysis');
             if (analysisData) {
-                console.log('📊 Analysis data found:', analysisData);
-                const data = JSON.parse(analysisData);
+                console.log('📊 Analysis data found via polling/event:', analysisData);
+                try {
+                    const data = JSON.parse(analysisData);
 
-                // Add to local analysis messages
-                setAnalysisMessages(prev => [...prev, {
-                    id: data.id,
-                    analysis: data.analysis,
-                    stats: data.stats
-                }]);
+                    // Add to local analysis messages if not already present
+                    setAnalysisMessages(prev => {
+                        if (prev.some(m => m.id === data.id)) return prev;
+                        setLastUpdate(Date.now()); // Update timestamp
+                        return [...prev, {
+                            id: data.id,
+                            analysis: data.analysis,
+                            stats: data.stats
+                        }];
+                    });
 
-                // Force open chat
-                setIsOpen(true);
-                sessionStorage.setItem('chatPopupOpen', 'true');
+                    // Force open chat
+                    setIsOpen(true);
+                    sessionStorage.setItem('chatPopupOpen', 'true');
 
-                // Clear after displaying
-                sessionStorage.removeItem('paymentAnalysis');
+                    // Clear after processing
+                    sessionStorage.removeItem('paymentAnalysis');
+                } catch (e) {
+                    console.error('Error parsing analysis data:', e);
+                }
             }
         };
 
-        window.addEventListener('paymentAnalysisUpdate', handleAnalysisUpdate);
+        // Listen for event
+        window.addEventListener('paymentAnalysisUpdate', checkAnalysis);
 
-        // Also check on mount if there's pending analysis
-        const pendingAnalysis = sessionStorage.getItem('paymentAnalysis');
-        if (pendingAnalysis) {
-            handleAnalysisUpdate();
-        }
+        // Also poll every 2 seconds as backup
+        const pollInterval = setInterval(checkAnalysis, 2000);
 
-        return () => window.removeEventListener('paymentAnalysisUpdate', handleAnalysisUpdate);
+        // Check immediately on mount
+        checkAnalysis();
+
+        return () => {
+            window.removeEventListener('paymentAnalysisUpdate', checkAnalysis);
+            clearInterval(pollInterval);
+        };
     }, []);
 
     const toggleChat = (open: boolean) => {
@@ -155,6 +167,10 @@ export function AdminChatPopup() {
                                 <div className="flex items-center gap-2 text-[10px] uppercase tracking-widest text-gray-500 font-medium">
                                     <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
                                     Online
+                                </div>
+                                {/* DEBUG INDICATOR */}
+                                <div className="text-[9px] text-gray-600 font-mono mt-1">
+                                    Last update: {lastUpdate ? new Date(lastUpdate).toLocaleTimeString() : 'Waiting...'}
                                 </div>
                             </div>
                         </div>

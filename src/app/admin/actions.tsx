@@ -26,7 +26,7 @@ async function submitAdminMessage(content: string): Promise<{ id: number; displa
     });
 
     const result = await streamUI({
-        model: google(process.env.OPENAI_MODEL_NAME || 'gemini-1.5-flash'),
+        model: google(process.env.OPENAI_MODEL_NAME || 'gemini-2.5-flash'),
         system: `Tu es PayBot, un assistant IA spécialisé dans les paiements de masse de pensions via Mojaloop.
 
 Tu aides les administrateurs à :
@@ -65,10 +65,24 @@ RÈGLES:
                 generate: async function* () {
                     yield (
                         <div className="inline-block bg-emerald-50 text-emerald-700 px-3 py-1 rounded-full text-sm font-medium mb-3">
-                            📋 Prêt pour l'upload
+                            📋 Prêt pour l'upload CSV
                         </div>
                     );
                     return <CSVUploadWidget />;
+                }
+            },
+            showImageUpload: {
+                description: 'Affiche le composant pour uploader une image de liste de retraités',
+                parameters: z.object({}),
+                generate: async function* () {
+                    yield (
+                        <div className="inline-block bg-purple-50 text-purple-700 px-3 py-1 rounded-full text-sm font-medium mb-3">
+                            🖼️ Prêt pour l'analyse d'image
+                        </div>
+                    );
+                    // Dynamic import to avoid circular dependencies if any
+                    const { ImageUploadWidget } = await import('@/components/admin/ImageUploadWidget');
+                    return <ImageUploadWidget />;
                 }
             }
         }

@@ -62,7 +62,7 @@ RÉPONDS UNIQUEMENT avec un objet JSON valide dans ce format EXACT:
 IMPORTANT: Réponds UNIQUEMENT avec le JSON, sans texte avant ou après.`;
 
         const result = await generateText({
-            model: google(process.env.OPENAI_MODEL_NAME || 'gemini-1.5-flash'),
+            model: google(process.env.OPENAI_MODEL_NAME || 'gemini-2.5-flash'),
             prompt,
             temperature: 0.3,
         });

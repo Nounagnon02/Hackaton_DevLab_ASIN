@@ -95,11 +95,13 @@ export default function BulkPaymentsPage() {
     const [activeTab, setActiveTab] = useState<'all' | 'success' | 'errors'>('all');
     const [isWorkerReady, setIsWorkerReady] = useState(false);
 
-    // Refs for auto-save
+    // Refs for auto-save and avoiding stale closures
     const logsRef = useRef<PaymentResult[]>([]);
     const processedIndicesRef = useRef<Set<number>>(new Set());
     const successCountRef = useRef(0);
     const errorCountRef = useRef(0);
+    const csvDataRef = useRef<any[]>([]);
+    const elapsedTimeRef = useRef('00:00:00');
 
     const workerRef = useRef<Worker | null>(null);
     const startTimeRef = useRef<number | null>(null);
@@ -110,8 +112,8 @@ export default function BulkPaymentsPage() {
 
     const [config, setConfig] = useState({
         apiUrl: 'http://localhost:3001/transfers',
-        workers: 20,
-        delay: 10,
+        workers: 10,
+        delay: 50,
         restartInterval: 200,
         payerIdType: 'MSISDN',
         payerId: '123456789'
@@ -122,6 +124,21 @@ export default function BulkPaymentsPage() {
     useEffect(() => { processedIndicesRef.current = processedIndices; }, [processedIndices]);
     useEffect(() => { successCountRef.current = successCount; }, [successCount]);
     useEffect(() => { errorCountRef.current = errorCount; }, [errorCount]);
+    useEffect(() => { csvDataRef.current = csvData; }, [csvData]);
+    useEffect(() => { elapsedTimeRef.current = elapsedTime; }, [elapsedTime]);
+
+    // Check for pending CSV from Image Upload
+    useEffect(() => {
+        const pendingCSV = sessionStorage.getItem('pendingBulkPaymentCSV');
+        if (pendingCSV) {
+            console.log('Found pending CSV from image upload');
+            const data = parseCSV(pendingCSV);
+            setCsvData(data);
+            setCurrentFileId(`image_upload_${Date.now()}`);
+            setCurrentFileName('extracted_from_image.csv');
+            sessionStorage.removeItem('pendingBulkPaymentCSV');
+        }
+    }, []);
 
     // Throttled Auto-save every 5 seconds when running
     useEffect(() => {
@@ -221,24 +238,33 @@ export default function BulkPaymentsPage() {
     const lastAnalysisCountRef = useRef(0);
 
     const triggerAnalysis = async () => {
-        if (logsRef.current.length === 0) return;
+        console.log('🤖 triggerAnalysis called, logs count:', logsRef.current.length);
+        if (logsRef.current.length === 0) {
+            console.log('🤖 No logs yet, skipping analysis');
+            return;
+        }
 
         console.log('🤖 Triggering AI analysis...', logsRef.current.length, 'logs');
 
         try {
+            // Get current stats from refs to avoid stale closures
+            const currentStats = {
+                total: csvDataRef.current.length,
+                processed: processedIndicesRef.current.size,
+                successCount: successCountRef.current,
+                errorCount: errorCountRef.current,
+                remaining: csvDataRef.current.length - processedIndicesRef.current.size,
+                elapsedTime: elapsedTimeRef.current
+            };
+
+            console.log('🤖 Sending stats:', currentStats);
+
             const response = await fetch('/api/admin/analyze-payments', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
                     logs: logsRef.current,
-                    stats: {
-                        total: csvData.length,
-                        processed: processedIndicesRef.current.size,
-                        successCount: successCountRef.current,
-                        errorCount: errorCountRef.current,
-                        remaining: csvData.length - processedIndicesRef.current.size,
-                        elapsedTime
-                    }
+                    stats: currentStats
                 })
             });
 
@@ -251,15 +277,18 @@ export default function BulkPaymentsPage() {
                     ...result,
                     id: Date.now()
                 };
+                console.log('🤖 Storing analysis data in sessionStorage:', analysisData);
                 sessionStorage.setItem('paymentAnalysis', JSON.stringify(analysisData));
                 // Ensure chat is open
                 sessionStorage.setItem('chatPopupOpen', 'true');
                 // Dispatch event to notify chat
                 console.log('🤖 Dispatching paymentAnalysisUpdate event');
                 window.dispatchEvent(new CustomEvent('paymentAnalysisUpdate'));
+            } else {
+                console.log('🤖 Analysis failed:', result.error);
             }
         } catch (e) {
-            console.error('Analysis failed:', e);
+            console.error('🤖 Analysis fetch failed:', e);
         }
     };
 
@@ -267,22 +296,26 @@ export default function BulkPaymentsPage() {
         if (isRunning && csvData.length > 0) {
             console.log('🚀 Starting AI analysis interval');
 
-            // First analysis after 5 seconds
+            // First analysis after 3 seconds (reduced for faster feedback)
             const firstAnalysisTimeout = setTimeout(() => {
+                console.log('🤖 First analysis timeout triggered, logs:', logsRef.current.length);
                 if (logsRef.current.length > 0) {
                     lastAnalysisCountRef.current = logsRef.current.length;
                     triggerAnalysis();
                 }
-            }, 5000);
+            }, 3000);
 
-            // Then every 10 seconds
+            // Then every 8 seconds (more frequent for debugging)
             analysisIntervalRef.current = setInterval(() => {
-                // Only analyze if we have new logs since last analysis
-                if (logsRef.current.length > lastAnalysisCountRef.current && logsRef.current.length > 0) {
-                    lastAnalysisCountRef.current = logsRef.current.length;
+                console.log('🤖 Interval check - logs:', logsRef.current.length, 'last:', lastAnalysisCountRef.current);
+                // Trigger if we have logs (even if same count, for debugging)
+                if (logsRef.current.length > 0) {
+                    if (logsRef.current.length > lastAnalysisCountRef.current) {
+                        lastAnalysisCountRef.current = logsRef.current.length;
+                    }
                     triggerAnalysis();
                 }
-            }, 10000);
+            }, 8000);
 
             return () => {
                 clearTimeout(firstAnalysisTimeout);
@@ -772,8 +805,12 @@ export default function BulkPaymentsPage() {
                                     <span className={`font-bold w-16 shrink-0 ${log.success ? 'text-emerald-400' : 'text-rose-400'}`}>
                                         {log.success ? 'SUCCESS' : 'FAILED'}
                                     </span>
-                                    <span className="text-white/50 w-24 shrink-0">#{log.row._index + 1}</span>
-                                    <span className="flex-1 truncate">{log.message}</span>
+                                    <span className="text-white/50 w-16 shrink-0">#{log.row._index + 1}</span>
+                                    <div className="w-48 shrink-0 flex flex-col">
+                                        <span className="text-white font-medium truncate">{log.row.nom_complet || 'Unknown'}</span>
+                                        <span className="text-xs text-white/50">{log.row.montant} {log.row.devise}</span>
+                                    </div>
+                                    <span className="flex-1 truncate text-white/70">{log.message}</span>
                                     {log.transferId && <span className="text-white/30 text-[10px] hidden xl:block">{log.transferId}</span>}
                                     <span className="text-white/30">{log.duration}ms</span>
                                 </div>
